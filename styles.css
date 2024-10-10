@@ -1,0 +1,122 @@
+/* General styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Body */
+body {
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: #222;
+    color: #fff;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Section */
+.intro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
+
+.container {
+    width: 70%;
+    max-width: 900px;
+    text-align: center;
+}
+
+.container p {
+    margin: 15px 0;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    /* Keep the text left-aligned */
+    text-align: center; 
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    object-fit: cover;
+    border: 3px solid #222;
+}
+
+/* Social Icons */
+.social-icons {
+    margin-top: 20px;
+}
+
+.social-icons a {
+    margin: 0 10px;
+    color: #333;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #0077ff;
+}
+
+/* Useful Websites Section */
+.useful-websites {
+    margin-top: 30px;
+    text-align: justify; /* Justify the useful websites text */
+}
+
+.useful-websites h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.useful-websites ul {
+    list-style-type: none;
+}
+
+.useful-websites ul li {
+    font-size: 1.1rem;
+    margin: 10px 0;
+}
+
+.useful-websites ul li a {
+    color: #0077ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.useful-websites ul li a:hover {
+    color: #222;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #222;
+    color: #fff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-size: 0.9rem;
+}
