@@ -1,122 +1,470 @@
-/* General styling */
-* {
+/* Basic Reset & Defaults */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
 }
 
-/* Body */
+html {
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links if added later */
+}
+
 body {
-    background-color: #5e5e60;
-    color: #111111;
+    font-family: 'Roboto', sans-serif; /* Modern sans-serif font */
+    line-height: 1.6;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #333; /* Dark gray text */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 100vh;
-}
-
-/* Header */
-header {
-    text-align: center;
+    min-height: 100vh; /* Ensure footer stays at the bottom */
     padding: 20px;
-    background-color: #222;
-    color: #fff;
 }
 
-h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-}
-
-/* Section */
-.intro {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0;
-}
-
+/* Main Container */
 .container {
-    width: 70%;
-    max-width: 900px;
-    text-align: center;
+    max-width: 700px; /* Limit content width for readability */
+    margin: 40px auto; /* Center container and add vertical space */
+    width: 100%;
+    flex-grow: 1; /* Allow container to grow to fill space */
 }
 
-.container p {
-    margin: 15px 0;
-    line-height: 1.6;
-    font-size: 1.1rem;
-    /* Keep the text left-aligned */
-    text-align: center; 
+/* Profile Card Section */
+.profile-card {
+    background-color: #ffffff; /* White background for the card */
+    padding: 40px;
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    text-align: center; /* Center content within the card */
 }
 
 .profile-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+    width: 120px; /* Profile image size */
+    height: 120px;
+    border-radius: 50%; /* Circular image */
+    object-fit: cover; /* Ensure image covers the area well */
     margin-bottom: 20px;
-    object-fit: cover;
-    border: 3px solid #222;
+    border: 3px solid #eee; /* Optional subtle border */
+}
+
+h1 {
+    font-size: 2.2rem; /* Larger name heading */
+    font-weight: 700; /* Bold name */
+    margin-bottom: 5px;
+    color: #212529; /* Slightly darker heading color */
+}
+
+.tagline {
+    font-size: 1.1rem;
+    font-weight: 300; /* Lighter weight for tagline */
+    color: #6c757d; /* Muted color for tagline */
+    margin-bottom: 25px;
+}
+
+.bio p {
+    font-size: 1rem;
+    margin-bottom: 15px; /* Spacing between bio paragraphs */
+    max-width: 500px; /* Limit paragraph width for readability */
+    margin-left: auto;
+    margin-right: auto; /* Center the paragraphs */
+    text-align: justify; /* Justify text for a cleaner look */
+    text-align-last: center; /* Center the last line if it's short */
 }
 
 /* Social Icons */
 .social-icons {
-    margin-top: 20px;
+    margin-top: 30px; /* Space above icons */
 }
 
 .social-icons a {
-    margin: 0 10px;
-    color: #333;
-    font-size: 1.5rem;
-    transition: color 0.3s ease;
-}
-
-.social-icons a:hover {
-    color: #0077ff;
-}
-
-/* Useful Websites Section */
-.useful-websites {
-    margin-top: 30px;
-    text-align: justify; /* Justify the useful websites text */
-}
-
-.useful-websites h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-}
-
-.useful-websites ul {
-    list-style-type: none;
-}
-
-.useful-websites ul li {
-    font-size: 1.1rem;
-    margin: 10px 0;
-}
-
-.useful-websites ul li a {
-    color: #0077ff;
+    color: #6c757d; /* Muted icon color */
+    font-size: 1.8rem; /* Icon size */
+    margin: 0 12px; /* Spacing between icons */
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
-.useful-websites ul li a:hover {
-    color: #222;
+.social-icons a:hover,
+.social-icons a:focus {
+    color: #007bff; /* Change color on hover/focus (professional blue) */
+    transform: translateY(-3px); /* Slight lift effect on hover */
 }
 
 /* Footer */
 footer {
     text-align: center;
+    margin-top: 40px; /* Space above footer */
     padding: 15px;
-    background-color: #222;
-    color: #fff;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    font-size: 0.9rem;
+    color: #6c757d; /* Muted footer text */
 }
 
-footer p {
+/* Responsive Adjustments (Optional but Recommended) */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+    }
+    .profile-card {
+        padding: 30px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    .tagline {
+        font-size: 1rem;
+    }
+    .bio p {
+        font-size: 0.95rem;
+    }
+    .social-icons a {
+        font-size: 1.6rem;
+        margin: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .profile-card {
+        padding: 20px;
+    }
+    .profile-img {
+        width: 100px;
+        height: 100px;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    .bio p {
+       text-align: center; /* Center text on very small screens */
+       text-align-last: center;
+    }
+}
+
+
+/* ==========================
+   Blog Page Specific Styles
+   ========================== */
+
+.page-header {
+    background-color: #ffffff; /* White background for header */
+    padding: 15px 0;
+    margin-bottom: 30px; /* Space below header */
+    border-bottom: 1px solid #e9ecef; /* Subtle bottom border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); /* Very light shadow */
+}
+
+.header-container {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space out items */
+    align-items: center; /* Vertically align items */
+    max-width: 900px; /* Slightly wider container for header if desired */
+}
+
+.page-header h1 {
+    font-size: 1.8rem; /* Slightly smaller H1 for subpages */
+    margin-bottom: 0; /* Remove default margin */
+    text-align: right; /* Align title to the right */
+}
+
+.back-link {
+    color: #007bff; /* Use accent color */
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover,
+.back-link:focus {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+.back-link i {
+    margin-right: 5px; /* Space between icon and text */
+}
+
+
+.blog-list h2,
+.wiki-section h2 {
+    font-size: 1.6rem;
+    color: #343a40;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef; /* Underline heading */
+}
+
+.blog-post {
+    background-color: #ffffff; /* White background for posts */
+    padding: 25px;
+    margin-bottom: 30px; /* Space between posts */
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for posts */
+    transition: box-shadow 0.3s ease; /* Transition on hover */
+}
+
+.blog-post:hover {
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Slightly larger shadow on hover */
+}
+
+
+.blog-post h3 {
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.blog-post h3 a {
+    text-decoration: none;
+    color: #007bff; /* Link color for titles */
+    transition: color 0.3s ease;
+}
+
+.blog-post h3 a:hover,
+.blog-post h3 a:focus {
+    color: #0056b3; /* Darker link color on hover */
+    text-decoration: underline;
+}
+
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #6c757d; /* Muted color for date */
+    margin-bottom: 15px;
+}
+
+.blog-post p { /* Style for the excerpt */
+    margin-bottom: 15px;
+    color: #495057; /* Slightly lighter than main text */
+}
+
+.read-more,
+.wiki-link {
+    display: inline-block;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
     font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.read-more:hover,
+.read-more:focus,
+.wiki-link:hover,
+.wiki-link:focus {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.wiki-section {
+    background-color: #ffffff;
+    padding: 25px;
+    margin-top: 40px; /* Space above wiki section */
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.wiki-section p {
+    margin-bottom: 15px;
+    color: #495057;
+}
+
+/* Responsive adjustments for blog header */
+@media (max-width: 576px) {
+    .header-container {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the start */
+    }
+    .page-header h1 {
+        text-align: left; /* Align title left on small screens */
+        margin-top: 10px; /* Add space above title */
+        font-size: 1.6rem;
+    }
+
+    .blog-post h3 {
+        font-size: 1.2rem;
+    }
+}
+
+
+/* ==========================
+   Wiki Page Specific Styles
+   ========================== */
+
+/* Basic layout for wiki content and TOC */
+.wiki-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 30px; /* Space between TOC and content */
+    align-items: flex-start; /* Align items to the top */
+    /* ADD OR UPDATE THIS LINE for increased width */
+    max-width: 1140px; /* Increase max-width (e.g., from default 700px or if not set) */
+    margin-left: auto;  /* Ensure container stays centered */
+    margin-right: auto; /* Ensure container stays centered */
+}
+
+/* Styles for .wiki-toc (keep as is) */
+.wiki-toc {
+    flex: 0 0 220px; /* Fixed width for TOC, don't grow or shrink */
+    background-color: #f8f9fa; /* Slightly different background for TOC */
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+    position: sticky; /* Make TOC sticky */
+    top: 20px; /* Stick 20px from the top */
+    order: 1; /* Show TOC first visually */
+    max-height: calc(100vh - 40px); /* Limit height to viewport */
+    overflow-y: auto; /* Allow scrolling if TOC is too long */
+}
+
+/* Styles for .wiki-content (keep as is) */
+.wiki-content {
+    flex: 1; /* Allow content to take remaining space */
+    min-width: 300px; /* Minimum width before wrapping */
+    background-color: #ffffff; /* White background for content */
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    order: 2; /* Content comes after TOC */
+}
+
+/* ... rest of your wiki styles ... */
+
+/* Responsive adjustments for Wiki layout */
+@media (max-width: 992px) { /* Keep this breakpoint, or adjust if needed */
+    .wiki-container {
+        flex-direction: column; /* Stack TOC and content */
+        /* Remove max-width override on smaller screens if it causes issues, */
+        /* or let it be handled by the general .container rules */
+         max-width: none; /* Allow it to be constrained by viewport/parent */
+    }
+    /* ... rest of responsive rules ... */
+}
+
+
+/* ==============================
+   Blog Article Page Specific Styles
+   ============================== */
+
+.blog-article-full {
+    background-color: #ffffff; /* White background for article content */
+    padding: 30px 40px; /* More padding for readability */
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px; /* Space below header */
+}
+
+/* Adjust main H1 for article title */
+.blog-article-full h1 {
+    font-size: 2.4rem; /* Larger title for the article page */
+    margin-bottom: 10px;
+    color: #212529;
+    line-height: 1.3;
+}
+
+.article-meta { /* Style for the date/author line */
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+    display: block; /* Ensure it takes its own line */
+}
+
+/* General paragraph styling within article */
+.blog-article-full p {
+    font-size: 1rem; /* Standard paragraph size */
+    line-height: 1.7; /* Improve readability */
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Styling for subheadings within the article */
+.blog-article-full h2 {
+    font-size: 1.8rem;
+    color: #343a40;
+    margin-top: 40px; /* More space above H2 */
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee; /* Subtle separator */
+}
+
+.blog-article-full h3 {
+    font-size: 1.4rem;
+    color: #495057;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+/* Styling for lists within the article */
+.blog-article-full ul,
+.blog-article-full ol {
+    margin-left: 25px; /* Indent lists */
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+.blog-article-full li {
+    margin-bottom: 10px; /* Space between list items */
+}
+
+/* Styling for placeholder images */
+.article-image {
+    margin: 30px 0; /* Add space around the figure */
+    text-align: center; /* Center the image and caption */
+}
+
+.article-image img {
+    max-width: 100%; /* Ensure image is responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 4px; /* Optional: slightly rounded corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: subtle shadow */
+}
+
+.article-image figcaption {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+
+/* Basic styling for code blocks */
+.code-block {
+    background-color: #f8f9fa; /* Light background for code */
+    border: 1px solid #e9ecef; /* Subtle border */
+    padding: 15px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace; /* Monospace font */
+    font-size: 0.9rem;
+    overflow-x: auto; /* Allow horizontal scrolling for long lines */
+    margin: 20px 0; /* Space around code block */
+    white-space: pre; /* Preserve whitespace and line breaks */
+}
+
+/* Inline code styling */
+.blog-article-full code:not(pre code) { /* Target inline code, not inside pre */
+     background-color: #e9ecef;
+     padding: 0.2em 0.4em;
+     border-radius: 3px;
+     font-size: 0.9em; /* Slightly smaller than surrounding text */
+     font-family: 'Courier New', Courier, monospace;
+}
+
+
+/* Responsive adjustments for article */
+@media (max-width: 768px) {
+    .blog-article-full {
+        padding: 20px;
+    }
+    .blog-article-full h1 {
+        font-size: 2rem;
+    }
+     .blog-article-full h2 {
+        font-size: 1.6rem;
+    }
+     .blog-article-full h3 {
+        font-size: 1.3rem;
+    }
 }
