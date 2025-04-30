@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Analysis of Python's strengths for scripting and automation tasks">
+    <title>Thoughts on Python for Scripting - Dev Blog - M4rioLS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container header-container">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="blog-article-full">
+            <h1>Thoughts on Python for Scripting</h1>
+            <p class="post-meta article-meta">Published on March 25, 2025 by M4rioLS</p>
+
+            <p>In an era of endless programming language options, Python continues to be my first reach for automation tasks, quick prototypes, and system scripting. Here's why this 35-year-old language still dominates my toolbox, and when I might consider alternatives.</p>
+
+            <figure class="article-image">
+                <img src="images/code-py.png" alt="Python code snippet in an editor">
+                <figcaption>A typical Python scripting session in modern VS Code</figcaption>
+            </figure>
+
+            <h2>Why Python? The Eternal Scripting Language</h2>
+            <p>Three key factors keep Python relevant for daily scripting needs:</p>
+            <ul>
+                <li><strong>Immediate Readability:</strong> The clean syntax means I can revisit old scripts and immediately understand them</li>
+                <li><strong>Batteries-Included Philosophy:</strong> Need CSV parsing? JSON handling? HTTP requests? It's all in the standard library</li>
+                <li><strong>Cross-Platform Consistency:</strong> Works equally well on Windows, Linux, and macOS without major rewrites</li>
+            </ul>
+
+            <h2>Scripting Showcase: Common Tasks</h2>
+            <p>Here's a typical file processing script I might write:</p>
+            <pre class="code-block"><code># Process log files older than 7 days
+import os
+from pathlib import Path
+from datetime import datetime, timedelta
+
+cutoff = datetime.now() - timedelta(days=7)
+log_dir = Path("/var/log/myapp")
+
+for file in log_dir.glob("*.log"):
+    if file.stat().st_mtime < cutoff.timestamp():
+        print(f"Archiving {file.name}")
+        os.rename(file, f"/archive/{file.name}")</code></pre>
+
+            <h2>Alternatives Worth Considering</h2>
+            <div class="comparison-table">
+                <table>
+                    <tr>
+                        <th>Language</th>
+                        <th>Best For</th>
+                        <th>Pain Points</th>
+                    </tr>
+                    <tr>
+                        <td>Bash/PowerShell</td>
+                        <td>Simple file operations, CLI plumbing</td>
+                        <td>Complex logic becomes unreadable</td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript (Node.js)</td>
+                        <td>Web-centric automation</td>
+                        <td>Callback hell, package management</td>
+                    </tr>
+                    <tr>
+                        <td>Go</td>
+                        <td>Performance-critical tools</td>
+                        <td>Overkill for simple tasks</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h2>When Python Isn't the Answer</h2>
+            <ul>
+                <li><strong>Startup Time Matters:</strong> For CLI tools called thousands of times daily, consider compiled alternatives</li>
+                <li><strong>Memory Constraints:</strong> Not ideal for embedded systems with tight RAM limits</li>
+                <li><strong>GUI-Intensive Tools:</strong> While possible, native desktop apps might be better served by other languages</li>
+            </ul>
+
+            <h2>Essential Python Scripting Packages</h2>
+            <pre class="code-block"><code># My go-to toolkit:
+import sys        # System parameters
+import argparse   # CLI arguments
+import pathlib    # Modern path handling
+import requests   # HTTP for humans
+import rich       # Beautiful console output
+import pandas     # Data wrangling
+import typer      # CLI framework</code></pre>
+
+            <h2>Conclusion: The Right Tool for the Job</h2>
+            <p>While I reach for Python 80% of the time, it's important to recognize when other tools might be better suited. For quick one-off scripts, system automation, and data manipulation, Python remains unmatched in its balance of simplicity and capability. What's your scripting language of choice?</p>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 M4rioLS | Work in Progress.</p>
+    </footer>
+
+</body>
+</html>
