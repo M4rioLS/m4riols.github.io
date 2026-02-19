@@ -58,11 +58,28 @@
 
                 <section id="software-project-nexus" class="wiki-subsection">
                     <h3>2.1 Project "Coding-Challenge"</h3>
-                    <p>Coding-Challenge is a webapp, where students can solve programming exercises and collect points and badges by gaining high scores and completing the tasks correctly. </p>
-                    <ul class="project-links">
-                        <li><a href="#">Overview</a></li>
-                        <li><a href="#">Installation Guide</a></li>
-                        <li><a href="#">Configuration</a></li>
+                    <p><strong>Coding-Challenge</strong> is an interactive web application for learning Python programming through gamified coding challenges. Students solve programming exercises, earn points and achievements, maintain daily streaks, and track their progress over time. The platform features secure Docker-based code execution, real-time testing, and comprehensive progress tracking.</p>
+                    <p><strong>Tech Stack:</strong> Flask 3.1.0+, MySQL 8.0, SQLAlchemy 2.0+, Docker 7.1.0+, Flask-Login, Flask-Mail, Gradio</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li><strong>Secure Code Execution:</strong> Docker-based sandboxing with resource limits, network isolation, and read-only filesystem</li>
+                        <li><strong>Gamification System:</strong> Points, achievements, daily streaks, and leaderboards to motivate learning</li>
+                        <li><strong>Task Management:</strong> JSON-based task definitions with test cases, difficulty levels, and hints</li>
+                        <li><strong>User Authentication:</strong> Flask-Login integration with secure password hashing (PBKDF2)</li>
+                        <li><strong>Progress Tracking:</strong> Submission history, completed tasks, earned achievements, and streak monitoring</li>
+                        <li><strong>Task Designer:</strong> Gradio-based UI for creating and managing coding challenges without manual JSON editing</li>
+                        <li><strong>Email Integration:</strong> Password reset functionality via Flask-Mail and Gmail SMTP</li>
+                        <li><strong>Real-time Feedback:</strong> Instant test case execution with detailed output and error messages</li>
+                    </ul>
+                    <p><strong>Security Features:</strong> Multi-layered defense including Docker isolation (--network none, --pids-limit, --memory limits), SQLAlchemy ORM (SQL injection prevention), Jinja2 autoescaping (XSS protection), and timeout protection against infinite loops.</p>
+                    <p><strong>Architecture:</strong> Modular Flask application with JSON-based content management, SQLAlchemy ORM with many-to-many relationships, and defense-in-depth security model. Task Designer runs on separate port (7860) for content creation.</p>
+                     <ul class="project-links">
+                        <li><a href="article8.html">Architecture Deep Dive</a></li>
+                        <li><a href="#">User Guide</a></li>
+                        <li><a href="#">Creating Tasks</a></li>
+                        <li><a href="#">Achievement System</a></li>
+                        <li><a href="#">Security Model</a></li>
+                        <li><a href="#">Deployment Guide</a></li>
                     </ul>
                 </section>
 

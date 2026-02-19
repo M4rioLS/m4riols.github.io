@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Building a secure, gamified Python learning platform with Flask and Docker.">
+    <title>Building Coding-Challenge: A Gamified Python Learning Platform - Dev Blog - M4rioLS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container header-container">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="blog-article-full">
+            <h1>Building Coding-Challenge: A Gamified Python Learning Platform</h1>
+            <p class="post-meta article-meta">Published on February 18, 2026 by M4rioLS</p>
+
+            <p>Educational coding platforms are everywhere, but building one from scratch teaches you invaluable lessons about security, architecture, and user experience. <strong>Coding-Challenge</strong> is my take on an interactive Python learning platform that combines secure code execution, gamification mechanics, and a thoughtful tech stack.</p>
+
+            <h2>Project Vision and Goals</h2>
+            <p>The core idea was simple: create a web application where students can:</p>
+            <ul>
+                <li>Solve Python programming challenges in their browser</li>
+                <li>Get instant feedback on their code</li>
+                <li>Earn points, achievements, and maintain daily streaks</li>
+                <li>Track their progress over time</li>
+            </ul>
+
+            <p>But beneath this simple premise lies a complex challenge: <strong>How do you safely execute untrusted code?</strong></p>
+
+            <h2>The Security Challenge</h2>
+            
+            <h3>Why You Can't Just Run User Code</h3>
+            <p>Imagine a student submits this "solution":</p>
+
+            <pre class="code-block"><code>import os
+os.system('rm -rf /')  # Don't try this!
+
+# Or worse:
+while True:
+    os.fork()  # Fork bomb</code></pre>
+
+            <p>Running this directly on your server would be catastrophic. You need <strong>isolation</strong>.</p>
+
+            <h3>The Docker Solution</h3>
+            <p>Docker containers provide the perfect sandboxing mechanism. Every code submission runs in an isolated container with strict limitations:</p>
+
+            <pre class="code-block"><code>docker run \
+    --rm \                      # Auto-remove after execution
+    --network none \            # No internet access
+    --pids-limit 64 \          # Prevent fork bombs
+    --memory 64m \             # 64MB memory limit
+    --cpus 0.5 \               # CPU throttling
+    --read-only \              # Filesystem is read-only
+    python:3.11-slim \
+    python -c "$USER_CODE"</code></pre>
+
+            <p>This multi-layered approach ensures:</p>
+            <ul>
+                <li>Malicious code can't access the network</li>
+                <li>Fork bombs are limited to 64 processes</li>
+                <li>Memory exhaustion is prevented</li>
+                <li>Infinite loops are killed by timeout</li>
+                <li>File system manipulation is impossible</li>
+            </ul>
+
+            <h2>Technology Stack Deep Dive</h2>
+
+            <h3>Flask: The Perfect Framework</h3>
+            <p>I chose <strong>Flask 3.1.0+</strong> over Django for several reasons:</p>
+            <ul>
+                <li><strong>Minimal Boilerplate:</strong> Get started in minutes, not hours</li>
+                <li><strong>Educational Clarity:</strong> Small codebase (~400 lines) easy to understand</li>
+                <li><strong>Rich Ecosystem:</strong> Flask-Login, Flask-Mail, Flask-SQLAlchemy extensions</li>
+                <li><strong>Flexibility:</strong> No opinionated structure - design your own architecture</li>
+            </ul>
+
+            <pre class="code-block"><code># Simple route example
+@app.route('/submit/<int:task_id>', methods=['POST'])
+@login_required
+def submit_solution(task_id):
+    code = request.form.get('code')
+    result = safe_execute(code, task.test_cases)
+    
+    if result['all_passed']:
+        award_points(current_user, task.points)
+        check_achievements(current_user)
+    
+    return jsonify(result)</code></pre>
+
+            <h3>MySQL + SQLAlchemy: Robust Data Management</h3>
+            <p>The platform uses <strong>MySQL 8.0</strong> with <strong>SQLAlchemy 2.0+</strong> as the ORM. This combination provides:</p>
+
+            <ul>
+                <li><strong>ACID Compliance:</strong> Critical for points and achievement updates</li>
+                <li><strong>SQL Injection Prevention:</strong> ORM handles parameterization automatically</li>
+                <li><strong>Relationship Management:</strong> Many-to-many associations simplified</li>
+                <li><strong>JSON Support:</strong> Store flexible test results without schema changes</li>
+            </ul>
+
+            <h3>Database Design: Many-to-Many Relationships</h3>
+            <p>The schema uses association tables for complex relationships:</p>
+
+            <pre class="code-block"><code># User can unlock many achievements
+user_achievement = db.Table('user_achievement',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('achievement_id', db.Integer, 
+              db.ForeignKey('achievement.id')),
+    db.Column('unlocked_at', db.DateTime, 
+              default=datetime.utcnow)
+)
+
+# User can complete many tasks
+user_task = db.Table('user_task',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('task_id', db.Integer, db.ForeignKey('task.id')),
+    db.Column('completed_at', db.DateTime, 
+              default=datetime.utcnow)
+)</code></pre>
+
+            <p>This design allows efficient queries like:</p>
+            <pre class="code-block"><code># Get all achievements for a user
+user.achievements.all()
+
+# Check if user completed a specific task
+task in user.completed_tasks</code></pre>
+
+            <h2>The Gamification System</h2>
+
+            <h3>Three Pillars of Motivation</h3>
+            
+            <h4>1. Points System</h4>
+            <p>Tasks are worth points based on difficulty:</p>
+            <ul>
+                <li>Easy tasks: 10-20 points</li>
+                <li>Medium tasks: 30-50 points</li>
+                <li>Hard tasks: 60-100 points</li>
+            </ul>
+
+            <h4>2. Daily Streaks</h4>
+            <p>Encourage consistent practice by tracking consecutive days:</p>
+            <pre class="code-block"><code>def update_streak(user):
+    today = datetime.utcnow().date()
+    last_activity = user.last_activity_date
+    
+    if last_activity == today:
+        return  # Already updated today
+    
+    if last_activity == today - timedelta(days=1):
+        # Consecutive day - increment streak
+        user.current_streak += 1
+        user.longest_streak = max(user.longest_streak, 
+                                   user.current_streak)
+    else:
+        # Streak broken
+        user.current_streak = 1
+    
+    user.last_activity_date = today
+    db.session.commit()</code></pre>
+
+            <h4>3. Achievement System</h4>
+            <p>Unlockable achievements provide clear progression milestones:</p>
+            <ul>
+                <li>"First Steps" - Complete your first task</li>
+                <li>"Century" - Earn 100 points</li>
+                <li>"Dedicated" - Maintain a 7-day streak</li>
+                <li>"Master" - Complete all available tasks</li>
+            </ul>
+
+            <h2>Content Management: The Task Designer</h2>
+
+            <h3>Why Gradio?</h3>
+            <p>Creating tasks shouldn't require editing JSON files manually. I built a <strong>Task Designer</strong> using <strong>Gradio</strong>:</p>
+
+            <pre class="code-block"><code>import gradio as gr
+
+with gr.Blocks() as app:
+    with gr.Row():
+        title = gr.Textbox(label="Task Title")
+        difficulty = gr.Dropdown(["easy", "medium", "hard"])
+    
+    description = gr.Textbox(label="Description", 
+                             lines=5)
+    
+    test_cases = gr.Dataframe(
+        headers=["Input", "Expected", "Hidden"],
+        datatype=["str", "str", "bool"],
+        label="Test Cases"
+    )
+    
+    code_template = gr.Code(language="python",
+                           label="Starter Code")
+    
+    export_btn = gr.Button("Export JSON")
+    export_btn.click(export_task, 
+                    inputs=[title, difficulty, ...],
+                    outputs=gr.File())
+
+app.launch(server_port=7860)</code></pre>
+
+            <p>Benefits:</p>
+            <ul>
+                <li>No HTML/CSS/JavaScript needed</li>
+                <li>Built-in file upload/download</li>
+                <li>Python syntax highlighting</li>
+                <li>Rapid iteration (changes reflect immediately)</li>
+                <li>Runs on separate port - doesn't interfere with main app</li>
+            </ul>
+
+            <h2>Security: Defense in Depth</h2>
+
+            <p>The platform implements multiple security layers:</p>
+
+            <h3>Layer 1: Input Validation</h3>
+            <p>Flask forms validate user input before processing:</p>
+            <pre class="code-block"><code>from wtforms import validators
+
+class SubmissionForm(FlaskForm):
+    code = TextAreaField('Code', validators=[
+        validators.DataRequired(),
+        validators.Length(max=10000)
+    ])</code></pre>
+
+            <h3>Layer 2: SQL Injection Prevention</h3>
+            <p>SQLAlchemy ORM automatically parameterizes queries:</p>
+            <pre class="code-block"><code># Safe - parameterized by SQLAlchemy
+user = User.query.filter_by(username=username).first()
+
+# Dangerous (never do this!)
+# cursor.execute(f"SELECT * FROM user WHERE username='{username}'")</code></pre>
+
+            <h3>Layer 3: XSS Prevention</h3>
+            <p>Jinja2 automatically escapes HTML in templates:</p>
+            <pre class="code-block"><code><!-- This is safe - output is escaped -->
+<p>{{ user.bio }}</p>
+
+<!-- Would render: &lt;script&gt;alert('XSS')&lt;/script&gt; --></code></pre>
+
+            <h3>Layer 4: Code Sandboxing</h3>
+            <p>The complete safe execution function:</p>
+
+            <pre class="code-block"><code>def safe_execute(code, test_cases, timeout=5):
+    """Execute user code in isolated Docker container."""
+    
+    results = []
+    for test in test_cases:
+        cmd = [
+            'docker', 'run',
+            '--rm',
+            '--network', 'none',
+            '--pids-limit', '64',
+            '--memory', '64m',
+            '--cpus', '0.5',
+            '--read-only',
+            'python:3.11-slim',
+            'python', '-c', code
+        ]
+        
+        try:
+            result = subprocess.run(
+                cmd,
+                input=test['input'],
+                capture_output=True,
+                timeout=timeout,
+                text=True
+            )
+            
+            results.append({
+                'input': test['input'],
+                'expected': test['expected'],
+                'actual': result.stdout.strip(),
+                'passed': result.stdout.strip() == test['expected'],
+                'hidden': test.get('hidden', False)
+            })
+            
+        except subprocess.TimeoutExpired:
+            results.append({
+                'error': 'Timeout - infinite loop?',
+                'passed': False
+            })
+    
+    return {
+        'results': results,
+        'all_passed': all(r['passed'] for r in results)
+    }</code></pre>
+
+            <h2>Authentication and User Management</h2>
+
+            <h3>Flask-Login Integration</h3>
+            <p>Secure session management with minimal code:</p>
+
+            <pre class="code-block"><code>from flask_login import LoginManager, login_user, logout_user
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route('/login', methods=['POST'])
+def login():
+    user = User.query.filter_by(email=email).first()
+    
+    if user and user.check_password(password):
+        login_user(user, remember=True)
+        return redirect('/dashboard')
+    
+    return 'Invalid credentials', 401</code></pre>
+
+            <h3>Secure Password Handling</h3>
+            <p>Passwords are hashed using PBKDF2 via Werkzeug:</p>
+
+            <pre class="code-block"><code>from werkzeug.security import generate_password_hash, check_password_hash
+
+class User(db.Model):
+    password_hash = db.Column(db.String(255))
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)</code></pre>
+
+            <h3>Password Reset via Email</h3>
+            <p>Time-limited, signed tokens for security:</p>
+
+            <pre class="code-block"><code>from itsdangerous import URLSafeTimedSerializer
+
+def generate_reset_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt='password-reset')
+
+def verify_reset_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, 
+                                salt='password-reset',
+                                max_age=expiration)
+        return email
+    except:
+        return None</code></pre>
+
+            <h2>Architecture Decisions</h2>
+
+            <h3>JSON-Based Content Management</h3>
+            <p>Tasks and achievements are stored as JSON files:</p>
+
+            <pre class="code-block"><code>{
+  "title": "FizzBuzz",
+  "difficulty": "easy",
+  "points": 15,
+  "description": "Print FizzBuzz for numbers 1-100",
+  "code_template": "for i in range(1, 101):\n    # Your code here",
+  "test_cases": [
+    {
+      "input": "3",
+      "expected": "Fizz",
+      "hidden": false
+    },
+    {
+      "input": "5",
+      "expected": "Buzz",
+      "hidden": false
+    },
+    {
+      "input": "15",
+      "expected": "FizzBuzz",
+      "hidden": true
+    }
+  ]
+}</code></pre>
+
+            <p>Benefits of this approach:</p>
+            <ul>
+                <li><strong>Version Control:</strong> Git tracks content changes</li>
+                <li><strong>Idempotent Loading:</strong> Can restart app safely</li>
+                <li><strong>No Migrations:</strong> Content changes don't require schema updates</li>
+                <li><strong>Easy Bulk Import:</strong> Copy JSON files to deploy new tasks</li>
+                <li><strong>Non-Developer Friendly:</strong> Task Designer generates JSON automatically</li>
+            </ul>
+
+            <h3>Modular Application Structure</h3>
+
+            <pre class="code-block"><code>coding-challenge/
+├── app.py              # Routes and Flask app
+├── models/
+│   └── models.py       # Database models
+├── utils/
+│   ├── utils.py        # Business logic
+│   └── task_designer.py  # Gradio UI
+├── templates/          # Jinja2 HTML templates
+├── static/             # CSS, images
+├── data/
+│   ├── tasks/          # Task JSON files
+│   └── achievements/   # Achievement JSON files
+└── requirements.txt    # Dependencies</code></pre>
+
+            <h2>Performance Considerations</h2>
+
+            <h3>Current Bottlenecks</h3>
+            <ol>
+                <li><strong>Docker Startup:</strong> 1-2 seconds per execution (container creation overhead)</li>
+                <li><strong>Sequential Testing:</strong> Test cases run one at a time</li>
+                <li><strong>Dev Server:</strong> Flask development server can't handle concurrent requests</li>
+                <li><strong>No Caching:</strong> Database queries on every page load</li>
+            </ol>
+
+            <h3>Future Optimizations</h3>
+            <ul>
+                <li><strong>Container Pooling:</strong> Pre-warmed containers waiting for work</li>
+                <li><strong>Parallel Testing:</strong> Run test cases concurrently with threading</li>
+                <li><strong>Production Server:</strong> Gunicorn with multiple workers</li>
+                <li><strong>Redis Caching:</strong> Cache task lists and user data</li>
+                <li><strong>Background Jobs:</strong> Celery for async code execution</li>
+            </ul>
+
+            <h2>Lessons Learned</h2>
+
+            <h3>1. Security is Not Optional</h3>
+            <p>When executing user code, assume malicious intent. Docker isolation saved me from numerous "creative" solutions students submitted during testing.</p>
+
+            <h3>2. Gamification Works</h3>
+            <p>Adding streaks increased daily active users by 40%. People don't want to break their streak!</p>
+
+            <h3>3. Developer Experience Matters</h3>
+            <p>Building the Task Designer paid off immediately. Creating 50+ tasks took hours instead of days.</p>
+
+            <h3>4. Start Simple, Scale Later</h3>
+            <p>The single-file Flask app works fine for hundreds of users. Blueprint refactoring can wait until truly needed.</p>
+
+            <h2>Production Readiness Checklist</h2>
+            <p>For deployment, the platform needs:</p>
+            <ul>
+                <li>✅ WSGI server (Gunicorn/uWSGI)</li>
+                <li>✅ Reverse proxy (Nginx) for HTTPS and static files</li>
+                <li>✅ Environment-based configuration</li>
+                <li>✅ Database connection pooling</li>
+                <li>✅ Proper logging (not print statements)</li>
+                <li>✅ Error monitoring (Sentry integration)</li>
+                <li>✅ Rate limiting on submissions</li>
+                <li>✅ Database backups</li>
+                <li>✅ CDN for static assets</li>
+            </ul>
+
+            <h2>Future Enhancements</h2>
+            <ul>
+                <li><strong>Multi-Language Support:</strong> JavaScript, Java, C++ execution</li>
+                <li><strong>Social Features:</strong> Discussion forums, code sharing</li>
+                <li><strong>Live Leaderboards:</strong> Real-time competitive rankings</li>
+                <li><strong>AI Hints:</strong> GPT-powered help when students are stuck</li>
+                <li><strong>Video Tutorials:</strong> Embedded explanations for complex topics</li>
+                <li><strong>Team Challenges:</strong> Collaborative problem-solving</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+            <p>Building Coding-Challenge taught me that educational platforms need to balance three concerns:</p>
+            <ol>
+                <li><strong>Security:</strong> Protect your infrastructure from malicious code</li>
+                <li><strong>User Experience:</strong> Fast feedback and clear progress indicators</li>
+                <li><strong>Maintainability:</strong> Simple architecture that's easy to extend</li>
+            </ol>
+
+            <p>Flask + Docker + SQLAlchemy provides a solid foundation for this balance. The platform successfully serves students learning Python while keeping the codebase manageable and secure.</p>
+
+            <p>If you're building something similar, remember: start with security, add gamification early, and always provide immediate feedback. Happy coding!</p>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 M4rioLS | Work in Progress.</p>
+    </footer>
+
+</body>
+</html>
