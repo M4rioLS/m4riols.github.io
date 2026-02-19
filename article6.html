@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Building a multiplayer tower defense game with advanced AI in Godot Engine 4.">
+    <title>Swarm Defender: Godot Multiplayer and Advanced AI - Dev Blog - M4rioLS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container header-container">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="blog-article-full">
+            <h1>Swarm Defender: Godot Multiplayer and Advanced AI</h1>
+            <p class="post-meta article-meta">Published on February 5, 2026 by M4rioLS</p>
+
+            <p>After working with GameMaker for years, I wanted to try something different. Enter <strong>Godot Engine 4.6</strong>—a modern, open-source engine with powerful built-in features. The result is Swarm Defender, a 3D multiplayer co-op tower defense game where players work together to defend a central core against waves of intelligent enemies.</p>
+
+            <h2>Why Godot?</h2>
+            <p>Making the switch from GameMaker to Godot was motivated by several factors:</p>
+            <ul>
+                <li><strong>Native 3D Support:</strong> Unlike GameMaker, Godot has full 3D engine capabilities out of the box</li>
+                <li><strong>Scene-Node System:</strong> Godot's hierarchical scene structure makes complex projects more manageable</li>
+                <li><strong>Built-in Multiplayer:</strong> RPC system and MultiplayerSynchronizer nodes simplify networking</li>
+                <li><strong>GDScript:</strong> Python-like scripting that's easy to read and write</li>
+                <li><strong>Open Source:</strong> Complete control and no licensing concerns</li>
+            </ul>
+
+            <h2>Steam Integration</h2>
+            <p>One of the first major challenges was integrating Steam multiplayer. Using the <strong>GodotSteam</strong> addon and custom Steam Multiplayer Peer implementation, the game features:</p>
+            <ul>
+                <li>Steam lobby system for matchmaking (up to 4 players)</li>
+                <li>Peer-to-peer networking through Steam's infrastructure</li>
+                <li>Steam achievements and stats (planned)</li>
+                <li>Friends invite system</li>
+            </ul>
+
+            <pre class="code-block"><code># Example: Setting up Steam multiplayer
+func create_lobby():
+    Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 4)
+    
+func _on_lobby_created(connect_result, lobby_id):
+    if connect_result == 1:
+        current_lobby_id = lobby_id
+        multiplayer.multiplayer_peer = steam_peer</code></pre>
+
+            <h2>Advanced Enemy AI System</h2>
+            <p>The most technically interesting aspect of Swarm Defender is the enemy AI. After several refactoring passes, I've built a sophisticated system that includes:</p>
+
+            <h3>Navigation and Pathfinding</h3>
+            <ul>
+                <li><strong>NavigationAgent3D:</strong> Godot's built-in pathfinding for intelligent obstacle avoidance</li>
+                <li><strong>NavigationRegion3D:</strong> Baked navigation meshes for efficient pathfinding</li>
+                <li><strong>Dynamic Path Updates:</strong> Enemies recalculate paths when targets move</li>
+            </ul>
+
+            <h3>State Machine Architecture</h3>
+            <p>Each enemy operates on a three-state system:</p>
+            <ul>
+                <li><strong>Idle:</strong> Default state, waiting for patrol or detection</li>
+                <li><strong>Patrol:</strong> Following predetermined paths between path nodes</li>
+                <li><strong>Chase:</strong> Actively pursuing detected players or attacking the core</li>
+            </ul>
+
+            <h3>Vision and Detection System</h3>
+            <p>Enemies don't just magically know where players are. They have realistic vision:</p>
+            <ul>
+                <li><strong>Cone-based Vision:</strong> Configurable vision angle and range</li>
+                <li><strong>Line-of-Sight Checks:</strong> Raycasting to ensure enemies can actually see targets</li>
+                <li><strong>Alert System:</strong> Audio cues when enemies spot players</li>
+                <li><strong>Memory:</strong> Enemies remember last known player position briefly</li>
+            </ul>
+
+            <pre class="code-block"><code># Example: Vision cone detection
+func can_see_target(target_position: Vector3) -> bool:
+    var to_target = target_position - global_position
+    var angle = rad_to_deg(forward_vector.angle_to(to_target))
+    
+    if angle > vision_angle / 2.0:
+        return false
+    
+    # Perform raycast for line-of-sight
+    var space_state = get_world_3d().direct_space_state
+    var result = space_state.intersect_ray(query)
+    
+    return result and result.collider == target</code></pre>
+
+            <h3>Patrol Path System</h3>
+            <p>One of my favorite features is the automatic patrol path system:</p>
+            <ul>
+                <li><strong>Auto-Discovery:</strong> Enemies find path nodes using Godot's group system</li>
+                <li><strong>Multiple Sorting Methods:</strong> Alphabetical, indexed, or distance-based</li>
+                <li><strong>Looping or Reversing:</strong> Configurable patrol behaviors</li>
+                <li><strong>Continuous or Paused:</strong> Wait at nodes or keep moving</li>
+            </ul>
+
+            <h2>Enemy Variants</h2>
+            <p>Using inheritance, I created multiple enemy types from a base NPC class:</p>
+            <ul>
+                <li><strong>Standard Alien:</strong> 80 HP, melee attacks, standard speed</li>
+                <li><strong>Tank:</strong> 350 HP, 45 damage, slow but devastating</li>
+                <li><strong>Thrower:</strong> 120 HP, ranged projectile attacks, keeps distance</li>
+                <li><strong>Hopper:</strong> Hopping movement pattern with standard AI</li>
+                <li><strong>Floater:</strong> Flying enemy with vertical navigation capabilities</li>
+            </ul>
+
+            <h2>Performance Optimization</h2>
+            <p>With 75+ enemies potentially active at once, performance was critical. Key optimizations include:</p>
+
+            <h3>Staggered Updates</h3>
+            <p>Instead of all enemies updating every frame, they're distributed across frames:</p>
+            <pre class="code-block"><code># Assign each NPC to a different update frame
+var update_offset = randi() % performance_update_distribute_frames
+
+func _physics_process(delta):
+    if Engine.get_process_frames() % performance_update_distribute_frames != update_offset:
+        return
+    
+    # Only this subset of enemies updates this frame
+    update_ai(delta * performance_update_distribute_frames)</code></pre>
+
+            <h3>Distance-Based Updates</h3>
+            <ul>
+                <li>Nearby enemies update every frame</li>
+                <li>Medium-distance enemies update every 2-3 frames</li>
+                <li>Distant enemies update less frequently</li>
+            </ul>
+
+            <h3>Cached References</h3>
+            <ul>
+                <li>Player list cached and shared across all NPCs</li>
+                <li>Navigation queries throttled</li>
+                <li>Vision checks optimized with early-exit conditions</li>
+            </ul>
+
+            <h2>Code Organization</h2>
+            <p>One thing I'm proud of is the code structure. All NPC scripts use <code>#region</code> blocks for organization:</p>
+            <ul>
+                <li>Exports (configurable properties)</li>
+                <li>Node References</li>
+                <li>Internal State</li>
+                <li>Lifecycle Functions</li>
+                <li>Movement/Physics</li>
+                <li>Vision/Detection</li>
+                <li>Combat Systems</li>
+                <li>Pathfinding</li>
+                <li>Animation Management</li>
+            </ul>
+
+            <p>This makes navigating 500+ line files much easier and helps other developers understand the codebase.</p>
+
+            <h2>Server-Authoritative Multiplayer</h2>
+            <p>The game uses a server-authoritative model where the host manages:</p>
+            <ul>
+                <li>All enemy AI and pathfinding</li>
+                <li>Damage calculations</li>
+                <li>Entity spawning and deletion</li>
+                <li>Wave progression</li>
+            </ul>
+
+            <p>Clients handle:</p>
+            <ul>
+                <li>Player input</li>
+                <li>Rendering and interpolation</li>
+                <li>Local audio playback</li>
+                <li>UI updates</li>
+            </ul>
+
+            <h2>What's Next?</h2>
+            <p>Swarm Defender is still in active development. Upcoming features include:</p>
+            <ul>
+                <li>Complete wave spawning system with difficulty scaling</li>
+                <li>Player economy and upgrade system</li>
+                <li>Additional enemy types and bosses</li>
+                <li>More interactive level elements</li>
+                <li>Player ability system</li>
+            </ul>
+
+            <h2>Lessons from the Switch</h2>
+            <p>Moving from GameMaker to Godot has been enlightening:</p>
+            <ul>
+                <li><strong>Scene System is Powerful:</strong> Instancing and composition make complex hierarchies manageable</li>
+                <li><strong>Signals are Elegant:</strong> Much cleaner than GameMaker's event system for object communication</li>
+                <li><strong>Built-in Features Save Time:</strong> Navigation, multiplayer, and 3D rendering just work</li>
+                <li><strong>Open Source Matters:</strong> Being able to read engine source code when debugging is invaluable</li>
+            </ul>
+
+            <p>If you're considering learning Godot, I highly recommend it—especially for 3D projects.</p>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 M4rioLS | Work in Progress.</p>
+    </footer>
+
+</body>
+</html>

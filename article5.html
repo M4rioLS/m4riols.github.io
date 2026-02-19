@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Building a cooperative horror game with custom 3D rendering in GameMaker Studio 2.">
+    <title>Creating 3D Horror in a 2D Engine - Dev Blog - M4rioLS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container header-container">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="blog-article-full">
+            <h1>Creating 3D Horror in a 2D Engine</h1>
+            <p class="post-meta article-meta">Published on January 15, 2026 by M4rioLS</p>
+
+            <p>When people think of GameMaker Studio 2, they usually think of 2D games. Platformers, top-down adventures, maybe some pixel art RPGs. But what if I told you that you could build a fully 3D multiplayer horror game with skeletal animations, dynamic lighting, and custom shaders—all within GameMaker?</p>
+
+            <p>That's exactly what <strong>Dedin's Nightmare: UNITED</strong> is: a cooperative multiplayer survival horror game built entirely in GameMaker Studio 2. It requires two players working together to solve puzzles and survive through horror-themed levels.</p>
+
+            <h2>The 3D Challenge</h2>
+            <p>GameMaker isn't traditionally a 3D engine, but it has the primitives you need: vertex buffers, matrix transformations, and shader support. The real challenge is building the infrastructure on top of those primitives.</p>
+
+            <h3>Custom SMF System</h3>
+            <p>The game uses the SMF (SnidRS Model Format) system, a custom 3D model format that supports:</p>
+            <ul>
+                <li><strong>Vertex Buffer Management:</strong> Efficient rendering of 3D models</li>
+                <li><strong>Skeletal Animation:</strong> Character animations with dual quaternion skinning</li>
+                <li><strong>OBJ Import:</strong> Loading models from Blender and other 3D tools</li>
+                <li><strong>Collision Detection:</strong> Ray casting and triangle intersection for physics</li>
+            </ul>
+
+            <pre class="code-block"><code>// Example: Loading and animating a 3D model
+var model = smf_model_load("models/enemy_ghost.smf");
+smf_animation_play(model, "walk", true);
+smf_model_draw(model, x, y, z);</code></pre>
+
+            <h2>Multiplayer Architecture</h2>
+            <p>The game features IP-based networking with a client-server architecture. Key features include:</p>
+            <ul>
+                <li>Player role assignment (Dedin vs. Kasper characters)</li>
+                <li>Network data synchronization for positions, animations, and states</li>
+                <li>Latency monitoring and compensation</li>
+                <li>Shared inventory and puzzle state across clients</li>
+            </ul>
+
+            <h2>Lighting and Atmosphere</h2>
+            <p>Horror games live and die by their atmosphere. The game includes:</p>
+
+            <h3>Dynamic Lighting System</h3>
+            <ul>
+                <li>Real-time 3D point lights with fog integration</li>
+                <li>Flashlight mechanics with battery drainage</li>
+                <li>Zone-based darkness triggers</li>
+                <li>Shader-based lighting calculations in GLSL</li>
+            </ul>
+
+            <h3>Visual Effects</h3>
+            <ul>
+                <li><strong>BktGlitch System:</strong> Screen distortion and glitch effects for horror moments</li>
+                <li><strong>Custom Shaders:</strong> Water rendering, color overlays, fog effects</li>
+                <li><strong>Post-Processing:</strong> Camera static effects for surveillance cameras</li>
+            </ul>
+
+            <h2>Enemy AI and Gameplay</h2>
+            <p>The game features multiple enemy types with different behaviors:</p>
+            <ul>
+                <li><strong>Ghost:</strong> Phase through walls and surprise players</li>
+                <li><strong>Psycho:</strong> AI pathfinding to chase players through levels</li>
+                <li><strong>Alien:</strong> Fast-moving creatures that hunt in packs</li>
+                <li><strong>Robot:</strong> Patrolling sentries with predictable patterns</li>
+                <li><strong>Creep:</strong> Slow but deadly melee attackers</li>
+            </ul>
+
+            <h2>Cooperative Puzzle Design</h2>
+            <p>What makes the game unique is its focus on cooperation. Many puzzles require both players:</p>
+            <ul>
+                <li>One player monitoring cameras while the other navigates</li>
+                <li>Switch-based doors that require coordination</li>
+                <li>Shared inventory management (limited item slots)</li>
+                <li>Revival mechanics when a player goes down</li>
+            </ul>
+
+            <h2>Technical Lessons Learned</h2>
+            
+            <h3>Performance Optimization</h3>
+            <p>3D rendering in GameMaker can be demanding. Key optimizations included:</p>
+            <ul>
+                <li>Culling objects outside the camera frustum</li>
+                <li>Level-of-detail (LOD) for distant models</li>
+                <li>Efficient vertex buffer usage</li>
+                <li>Minimal draw calls through batching</li>
+            </ul>
+
+            <h3>Audio Management</h3>
+            <p>Horror relies heavily on audio. I implemented:</p>
+            <ul>
+                <li>Audio groups for efficient memory management (music, SFX, voice)</li>
+                <li>3D positional audio for immersive sound</li>
+                <li>Zone-based music triggers</li>
+                <li>Adaptive audio that responds to gameplay events</li>
+            </ul>
+
+            <h2>The Result</h2>
+            <p>Dedin's Nightmare: UNITED proves that with enough creativity and technical knowledge, you can push engines far beyond their intended use cases. While dedicated 3D engines like Unity or Unreal might offer more out-of-the-box features, there's something satisfying about building your own 3D infrastructure from scratch.</p>
+
+            <p>Check out the full project at <a href="https://dedin1.wixsite.com/devblog" target="_blank">https://dedin1.wixsite.com/devblog</a></p>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 M4rioLS | Work in Progress.</p>
+    </footer>
+
+</body>
+</html>

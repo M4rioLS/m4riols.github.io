@@ -35,8 +35,11 @@
                 </li>
                 <li><a href="#game-projects">3. Game Projects</a>
                     <ul>
-                        <li><a href="#game-blockventure">3.1 DedinMod (Minecraft Mod)</a></li>
-                        <li><a href="#game-pixelracer">3.2 Villager's Adventure (Retro Game)</a></li>
+                        <li><a href="#game-rpg-engine">3.1 DN RPG Engine</a></li>
+                        <li><a href="#game-dedin-nightmare">3.2 Dedin's Nightmare: UNITED</a></li>
+                        <li><a href="#game-swarm-defender">3.3 Swarm Defender</a></li>
+                        <li><a href="#game-blockventure">3.4 DedinMod (Minecraft Mod)</a></li>
+                        <li><a href="#game-pixelracer">3.5 Villager's Adventure (Retro Game)</a></li>
                     </ul>
                 </li>
             </ul>
@@ -79,25 +82,107 @@
                 <h2>3. Game Projects</h2>
                 <p>Information about games, game modifications, and related tools.</p>
 
-                 <section id="game-blockventure" class="wiki-subsection">
-                    <h3>3.1 DedinMod</h3>
-                    <p>DedinMod is a Fabric mod for Minecraft 1.21.3 that adds new blocks, items, and mechanics focused on utility and adventure.</p>
-                     <ul class="project-links">
+                <section id="game-rpg-engine" class="wiki-subsection">
+                    <h3>3.1 DN RPG Engine</h3>
+                    <p><strong>DN RPG Engine</strong> is a traditional turn-based RPG framework built in GameMaker Studio 2. Features include a complete party management system, turn-based combat with status effects, dialogue and NPC interactions, inventory and shop mechanics, and save/load functionality. The engine provides a solid foundation for creating story-driven RPGs with minimal setup.</p>
+                    <p><strong>Tech Stack:</strong> GameMaker Studio 2 (GML), JSON-based localization system</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li>Turn-based battle system with multiple party members</li>
+                        <li>Status effect system (poison, regeneration, stun, silence, curse, blindness)</li>
+                        <li>NPC dialogue and merchant systems</li>
+                        <li>Inventory management with item targeting options</li>
+                        <li>Audio management with separate volume controls</li>
+                        <li>Screen effects (fade transitions, screen shake)</li>
+                    </ul>
+                    <ul class="project-links">
                         <li><a href="#">Getting Started</a></li>
-                        <li><a href="#">Biomes & Dimensions</a></li>
-                        <li><a href="#">Items & Blocks Compendium</a></li>
-                        <li><a href="#">Crafting Recipes</a></li>
-                        <li><a href="#">Mod Compatibility</a></li>
+                        <li><a href="#">Battle System Guide</a></li>
+                        <li><a href="#">Creating Custom NPCs</a></li>
+                        <li><a href="#">Item System Documentation</a></li>
+                    </ul>
+                </section>
+
+                <section id="game-dedin-nightmare" class="wiki-subsection">
+                    <h3>3.2 Dedin's Nightmare: UNITED</h3>
+                    <p><strong>Dedin's Nightmare: UNITED</strong> is a cooperative multiplayer survival horror game with puzzle-solving elements. Two players must work together to survive through numerous levels, solving puzzles and overcoming horror-themed challenges. Features a custom 3D engine built within GameMaker Studio 2.</p>
+                    <p><strong>Tech Stack:</strong> GameMaker Studio 2, Custom 3D Rendering Engine (SMF), GLSL Shaders, Network Multiplayer</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li>2-player cooperative multiplayer with IP/port configuration</li>
+                        <li>Custom 3D rendering with skeletal animation (SMF format)</li>
+                        <li>Multiple enemy types (Ghost, Psycho, Alien, Robot, Creep)</li>
+                        <li>Inventory system with usable items (flashlight, weapons, tools)</li>
+                        <li>Dynamic lighting and fog effects with custom shaders</li>
+                        <li>Hub-based level progression with 7+ game levels</li>
+                        <li>Achievement tracking system</li>
+                    </ul>
+                    <p><strong>Project Website:</strong> <a href="https://m4riols.github.io" target="_blank">https://m4riols.github.io</a></p>
+                    <ul class="project-links">
+                        <li><a href="#">Multiplayer Setup Guide</a></li>
+                        <li><a href="#">Item & Equipment Guide</a></li>
+                        <li><a href="#">Level Walkthroughs</a></li>
+                        <li><a href="#">Enemy Strategies</a></li>
+                    </ul>
+                </section>
+
+                <section id="game-swarm-defender" class="wiki-subsection">
+                    <h3>3.3 Swarm Defender</h3>
+                    <p><strong>Swarm Defender</strong> is a 3D multiplayer co-op tower defense game built in Godot Engine 4.6. Players cooperate to defend a central core structure against waves of enemy NPCs with advanced AI behaviors. Features Steam integration for multiplayer lobbies and sophisticated enemy pathfinding systems.</p>
+                    <p><strong>Tech Stack:</strong> Godot Engine 4.6, GDScript, GodotSteam, Steam Multiplayer Peer</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li>Steam-based multiplayer with lobby system (up to 4 players)</li>
+                        <li>Advanced enemy AI with NavigationAgent3D pathfinding</li>
+                        <li>Multiple enemy types: Standard Melee, Tank (350 HP), Ranged Thrower, Hopper, Floater</li>
+                        <li>Server-authoritative multiplayer architecture</li>
+                        <li>Core defense mechanic with health and healing between waves</li>
+                        <li>Patrol path system with auto-discovery and line-of-sight detection</li>
+                        <li>First-person shooter mechanics with stamina system</li>
+                        <li>Interactive environment (doors, platforms, pressure plates)</li>
+                    </ul>
+                    <ul class="project-links">
+                        <li><a href="#">Steam Setup Guide</a></li>
+                        <li><a href="#">Enemy AI Documentation</a></li>
+                        <li><a href="#">Multiplayer Architecture</a></li>
+                        <li><a href="#">Level Design Tools</a></li>
+                    </ul>
+                </section>
+
+                <section id="game-blockventure" class="wiki-subsection">
+                    <h3>3.4 DedinMod (Minecraft Fabric Mod)</h3>
+                    <p><strong>DedinMod</strong> is a comprehensive Minecraft mod for version 1.21.11, built using the Fabric modding framework. The mod significantly expands Minecraft with 30+ custom blocks, numerous items, custom entities, status effects, and world generation features. Features include a teleportation network system, custom boss entities, and specialized tools and weapons.</p>
+                    <p><strong>Tech Stack:</strong> Java 21, Fabric Loader 0.18.2, Fabric API 0.139.5, Gradle 8.x, Yarn Mappings</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li><strong>Custom Blocks:</strong> 30+ unique blocks including teleporters, phase blocks, trampolines, and sensors</li>
+                        <li><strong>Custom Items:</strong> Specialized tools, weapons, hookshots, compass variants, totems, and consumables</li>
+                        <li><strong>Custom Entities:</strong> NPCs (Kasper), Puppet entities, custom projectiles, and boss entities</li>
+                        <li><strong>Status Effects:</strong> 9+ unique effects (anti-gravity, phase drifting, minimized, etc.)</li>
+                        <li><strong>World Generation:</strong> Custom ores, biome modifications, and placed features</li>
+                        <li><strong>Game Systems:</strong> Teleportation network, custom commands (/heal, /home), custom GUIs</li>
+                        <li><strong>Technical Features:</strong> Block entities, client-server networking, persistent data, Mixin integration</li>
+                    </ul>
+                    <p><strong>Architecture:</strong> Uses centralized initialization pattern with split source sets for client/server code, data generation API for recipes and models, and custom registry pattern for cleaner content registration.</p>
+                     <ul class="project-links">
+                        <li><a href="#">Installation Guide</a></li>
+                        <li><a href="#">Blocks & Mechanics Guide</a></li>
+                        <li><a href="#">Items & Equipment Compendium</a></li>
+                        <li><a href="#">Crafting Recipes Reference</a></li>
+                        <li><a href="#">Custom Entities & Bosses</a></li>
+                        <li><a href="#">Status Effects Guide</a></li>
+                        <li><a href="#">Teleportation System</a></li>
+                        <li><a href="article2.html">Modding Tutorial</a></li>
                     </ul>
                 </section>
 
                 <section id="game-pixelracer" class="wiki-subsection">
-                    <h3>3.2 Villager's Adventure (Retro Game)</h3>
+                    <h3>3.5 Villager's Adventure (Retro Game)</h3>
                     <p>Villager's Adventure is a top-down arcade game inspired by classic "rage-games". Built using GMS2.</p>
                      <ul class="project-links">
                         <li><a href="#">Gameplay Mechanics</a></li>
                         <li><a href="#">Controls</a></li>
-                        <li><a href="blog.html">Development Log</a></li>	<!-- Blog link -->
+                        <li><a href="blog.html">Development Log</a></li>
                     </ul>
                 </section>
             </section>

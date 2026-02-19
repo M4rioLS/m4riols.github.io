@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Deep dive into building DedinMod - a comprehensive Fabric mod for Minecraft with custom blocks, entities, and game systems.">
+    <title>Building DedinMod: A Comprehensive Minecraft Fabric Mod - Dev Blog - M4rioLS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container header-container">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="blog-article-full">
+            <h1>Building DedinMod: A Comprehensive Minecraft Fabric Mod</h1>
+            <p class="post-meta article-meta">Published on February 15, 2026 by M4rioLS</p>
+
+            <p>After diving into Fabric modding, I wanted to create something substantial—not just adding a few blocks or items, but building a comprehensive mod that demonstrates the full capabilities of the Fabric framework. The result is <strong>DedinMod</strong>, a feature-rich Minecraft mod for version 1.21.11 that adds over 30 custom blocks, numerous items, custom entities, status effects, and complex game systems.</p>
+
+            <h2>Project Scope and Architecture</h2>
+            <p>DedinMod is built on a solid technical foundation:</p>
+            <ul>
+                <li><strong>Java 21</strong> - Modern language features and performance</li>
+                <li><strong>Fabric Loader 0.18.2</strong> - Lightweight mod loading</li>
+                <li><strong>Fabric API 0.139.5</strong> - Core modding capabilities</li>
+                <li><strong>Gradle 8.x</strong> - Build automation</li>
+                <li><strong>Yarn Mappings</strong> - Human-readable deobfuscation</li>
+            </ul>
+
+            <h2>Architectural Patterns</h2>
+
+            <h3>Centralized Initialization</h3>
+            <p>Rather than scattering registration code throughout the mod, I use a centralized initialization pattern with dedicated "Init" classes:</p>
+
+            <pre class="code-block"><code>// Main entry point
+public class Dedinmod implements ModInitializer {
+    @Override
+    public void onInitialize() {
+        BlockInit.load();       // Register all blocks
+        ItemInit.load();        // Register all items
+        EntityInit.load();      // Register all entities
+        EffectInit.load();      // Register status effects
+        // ... more systems
+    }
+}</code></pre>
+
+            <h3>Registry Pattern with Utilities</h3>
+            <p>All content registration uses a custom <code>RegisterUtil</code> helper that wraps vanilla registry operations for cleaner, more maintainable code:</p>
+
+            <pre class="code-block"><code>public class BlockInit {
+    public static final Block TELEPORTER_BLOCK = 
+        RegisterUtil.registerBlock("teleporter_block",
+            new TeleporterBlock(AbstractBlock.Settings.create()
+                .strength(4.0f)
+                .requiresTool()));
+    
+    public static final Block PHASE_BLOCK = 
+        RegisterUtil.registerBlock("phase_block",
+            new PhaseBlock(AbstractBlock.Settings.create()
+                .nonOpaque()
+                .noCollision()));
+}</code></pre>
+
+            <h3>Split Source Sets</h3>
+            <p>The project uses separate source directories for client and server code:</p>
+            <ul>
+                <li><strong>src/main/java</strong> - Common/server-side code (blocks, items, entities)</li>
+                <li><strong>src/client/java</strong> - Client-only code (rendering, screens, models)</li>
+                <li><strong>src/main/generated</strong> - Auto-generated data (recipes, tags, loot tables)</li>
+            </ul>
+
+            <p>This separation prevents accidentally referencing client-side classes on the server, which would cause crashes.</p>
+
+            <h2>Key Features Implementation</h2>
+
+            <h3>1. Teleportation Network System</h3>
+            <p>One of the most complex features is the teleportation network. It required:</p>
+
+            <ul>
+                <li><strong>Block Entity:</strong> Stores teleporter name and destination</li>
+                <li><strong>Screen Handler:</strong> Custom GUI for setting destinations</li>
+                <li><strong>Network Payload:</strong> Client-server communication for teleportation</li>
+                <li><strong>Persistent Data:</strong> Server-side storage of teleporter networks</li>
+            </ul>
+
+            <pre class="code-block"><code>public class TeleporterBlockEntity extends BlockEntity {
+    private String teleporterName = "";
+    private String destinationName = "";
+    
+    public void teleportPlayer(ServerPlayerEntity player) {
+        if (destinationName.isEmpty()) return;
+        
+        BlockPos destination = findDestination(destinationName);
+        if (destination != null) {
+            player.teleport(
+                destination.getX() + 0.5,
+                destination.getY() + 1,
+                destination.getZ() + 0.5
+            );
+            // Play sound and particle effects
+        }
+    }
+}</code></pre>
+
+            <h3>2. Custom Status Effects</h3>
+            <p>The mod includes 9+ unique status effects that modify player behavior:</p>
+            <ul>
+                <li><strong>Anti-Gravity:</strong> Players float upward slowly</li>
+                <li><strong>Phase Drifting:</strong> Pass through certain blocks</li>
+                <li><strong>Minimized:</strong> Player hitbox becomes smaller</li>
+                <li><strong>Enhanced Speed/Strength:</strong> Amplified attributes</li>
+                <li><strong>Vulnerability:</strong> Increased damage taken</li>
+            </ul>
+
+            <pre class="code-block"><code>public class AntiGravityEffect extends StatusEffect {
+    @Override
+    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+        if (!entity.getWorld().isClient) {
+            // Apply upward velocity
+            Vec3d velocity = entity.getVelocity();
+            entity.setVelocity(velocity.x, 0.15, velocity.z);
+            entity.velocityModified = true;
+        }
+        return true;
+    }
+}</code></pre>
+
+            <h3>3. Custom Entities and NPCs</h3>
+            <p>The mod adds several custom entities including the "Kasper" NPC character:</p>
+
+            <pre class="code-block"><code>public class KasperEntity extends PassiveEntity {
+    @Override
+    protected void initGoals() {
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(2, new LookAtEntityGoal(this, 
+            PlayerEntity.class, 8.0f));
+    }
+    
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (!this.getWorld().isClient) {
+            // Custom interaction logic
+            player.sendMessage(Text.literal("Hello, traveler!"));
+        }
+        return ActionResult.SUCCESS;
+    }
+}</code></pre>
+
+            <h3>4. Data Generation API</h3>
+            <p>One of Fabric's most powerful features is the data generation API. Instead of manually writing JSON files for recipes, loot tables, and models, I generate them programmatically:</p>
+
+            <pre class="code-block"><code>public class DedinmodRecipeProvider extends FabricRecipeProvider {
+    @Override
+    public void generate(RecipeExporter exporter) {
+        // Shaped recipe for teleporter block
+        ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, 
+            BlockInit.TELEPORTER_BLOCK)
+            .pattern("OEO")
+            .pattern("EPE")
+            .pattern("OEO")
+            .input('O', Items.OBSIDIAN)
+            .input('E', Items.ENDER_PEARL)
+            .input('P', Items.ENDER_EYE)
+            .criterion(hasItem(Items.ENDER_PEARL), 
+                conditionsFromItem(Items.ENDER_PEARL))
+            .offerTo(exporter);
+    }
+}</code></pre>
+
+            <p>This approach has several benefits:</p>
+            <ul>
+                <li>Type safety - Compile-time checking of item/block references</li>
+                <li>Consistency - Recipes follow the same pattern</li>
+                <li>Maintainability - Easy to update when items change</li>
+                <li>Bulk generation - Create hundreds of recipes with loops</li>
+            </ul>
+
+            <h2>Technical Challenges and Solutions</h2>
+
+            <h3>Challenge 1: Client-Server Synchronization</h3>
+            <p>Minecraft's architecture separates client and server logic, even in single-player. Synchronizing custom data (like teleporter names) required implementing custom network payloads:</p>
+
+            <pre class="code-block"><code>public record TeleportPayload(String destination) 
+    implements CustomPayload {
+    
+    public static final Id<TeleportPayload> ID = 
+        new Id<>(new Identifier("dedinmod", "teleport"));
+    
+    @Override
+    public Id<? extends CustomPayload> getId() {
+        return ID;
+    }
+}</code></pre>
+
+            <h3>Challenge 2: Mixin Integration</h3>
+            <p>Sometimes you need to modify vanilla Minecraft behavior. Mixins allow bytecode injection without modifying Minecraft's source:</p>
+
+            <pre class="code-block"><code>@Mixin(LivingEntity.class)
+public abstract class LivingEntityMixin {
+    @Inject(method = "travel", at = @At("HEAD"))
+    private void modifyTravel(Vec3d movementInput, 
+        CallbackInfo ci) {
+        LivingEntity self = (LivingEntity)(Object)this;
+        
+        // Custom movement modification logic
+        if (self.hasStatusEffect(EffectInit.ANTI_GRAVITY)) {
+            // Override normal gravity behavior
+        }
+    }
+}</code></pre>
+
+            <h3>Challenge 3: Resource Loading and Textures</h3>
+            <p>Properly organizing and loading textures, models, and blockstates is crucial. The mod follows Minecraft's resource conventions:</p>
+            <ul>
+                <li><code>assets/dedinmod/textures/block/</code> - Block textures</li>
+                <li><code>assets/dedinmod/textures/item/</code> - Item textures</li>
+                <li><code>assets/dedinmod/models/block/</code> - Block models (JSON)</li>
+                <li><code>assets/dedinmod/blockstates/</code> - Blockstate definitions</li>
+            </ul>
+
+            <h2>Development Workflow</h2>
+
+            <h3>Gradle Tasks</h3>
+            <p>The development cycle uses several Gradle tasks:</p>
+            <pre class="code-block"><code># Run client for testing
+./gradlew runClient
+
+# Generate data files (recipes, models, etc.)
+./gradlew runDatagen
+
+# Build final mod JAR
+./gradlew build
+
+# Clean build artifacts
+./gradlew clean</code></pre>
+
+            <h3>Testing Methodology</h3>
+            <ol>
+                <li>Write feature code</li>
+                <li>Run data generation to create JSON files</li>
+                <li>Launch test client with <code>runClient</code></li>
+                <li>Test in-game functionality</li>
+                <li>Iterate on issues</li>
+            </ol>
+
+            <h2>Custom Blocks Showcase</h2>
+            <p>The mod includes diverse custom blocks with unique mechanics:</p>
+
+            <ul>
+                <li><strong>Teleporter Block:</strong> Network-based instant travel system</li>
+                <li><strong>Phase Block:</strong> Players can pass through when phasing</li>
+                <li><strong>Trampoline Block:</strong> Launches entities upward</li>
+                <li><strong>Sensor Block:</strong> Detects nearby entities and outputs redstone signal</li>
+                <li><strong>Magic Anvil:</strong> Custom crafting station with unique GUI</li>
+                <li><strong>Custom Ores:</strong> New ore types with custom generation</li>
+            </ul>
+
+            <h2>Performance Considerations</h2>
+            <p>When adding content to Minecraft, performance is crucial:</p>
+
+            <ul>
+                <li><strong>Tick Efficiently:</strong> Block entities only tick when necessary</li>
+                <li><strong>Optimize Rendering:</strong> Use efficient render layers</li>
+                <li><strong>Lazy Loading:</strong> Don't create objects until needed</li>
+                <li><strong>Cache References:</strong> Store frequently-used block/item instances</li>
+            </ul>
+
+            <h2>Lessons Learned</h2>
+
+            <h3>1. Plan Your Registry Names Early</h3>
+            <p>Registry names are permanent once players start using your mod. Changing them breaks existing worlds. Use descriptive, future-proof names from the start.</p>
+
+            <h3>2. Use Data Generation</h3>
+            <p>Writing JSON files by hand is error-prone and tedious. The data generation API saves countless hours and prevents mistakes.</p>
+
+            <h3>3. Test on Dedicated Servers</h3>
+            <p>Single-player testing isn't enough. Always test on a dedicated server to catch client-server synchronization bugs.</p>
+
+            <h3>4. Document Your Mixins</h3>
+            <p>Mixins are powerful but can be fragile when Minecraft updates. Document why each mixin exists and what it modifies.</p>
+
+            <h2>What's Next for DedinMod?</h2>
+            <p>Future planned features include:</p>
+            <ul>
+                <li>Boss dimension with custom biomes</li>
+                <li>Advanced automation blocks (pipes, conveyors)</li>
+                <li>Custom enchantments and potion effects</li>
+                <li>Multiplayer-focused mechanics and challenges</li>
+                <li>Integration with other popular mods</li>
+            </ul>
+
+            <h2>Resources for Aspiring Modders</h2>
+            <ul>
+                <li><a href="https://fabricmc.net/wiki/" target="_blank">Fabric Wiki</a> - Official documentation</li>
+                <li><a href="https://github.com/FabricMC/fabric-example-mod" target="_blank">Fabric Example Mod</a> - Reference implementations</li>
+                <li><a href="article2.html">Getting Started with Fabric Modding</a> - My beginner's guide</li>
+                <li><a href="https://discord.gg/v6v4pMv" target="_blank">Fabric Discord</a> - Community support</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+            <p>Building DedinMod has been an incredible learning experience. Fabric's modular architecture and powerful APIs make it possible to create complex, feature-rich mods without fighting the framework. Whether you're adding simple blocks or building entire game systems, Fabric provides the tools you need.</p>
+
+            <p>The source code organization, data generation workflow, and architectural patterns demonstrated in DedinMod can serve as a template for your own ambitious modding projects. Start small, iterate often, and don't be afraid to dive deep into Minecraft's source code to understand how it all works.</p>
+
+            <p>Happy modding!</p>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 M4rioLS | Work in Progress.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Deep dive into building a traditional RPG engine in GameMaker Studio 2.">
+    <title>Building an RPG Engine from Scratch - Dev Blog - M4rioLS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container header-container">
+            <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="blog-article-full">
+            <h1>Building an RPG Engine from Scratch</h1>
+            <p class="post-meta article-meta">Published on February 10, 2026 by M4rioLS</p>
+
+            <p>Over the past few months, I've been working on something that's been on my bucket list for years: a traditional turn-based RPG engine. Not just a simple battle system, but a complete framework with party management, dialogue, inventory, shops, and all the systems you'd expect from a classic RPG.</p>
+
+            <h2>Why GameMaker Studio 2?</h2>
+            <p>While many developers reach for Unity or Godot for RPG projects, I chose GameMaker Studio 2 for a few key reasons:</p>
+            <ul>
+                <li><strong>GML is Perfect for Rapid Prototyping:</strong> GameMaker Language lets me iterate quickly on gameplay mechanics without getting bogged down in boilerplate code.</li>
+                <li><strong>Built-in 2D Tools:</strong> The sprite and animation systems are excellent for traditional 2D RPGs.</li>
+                <li><strong>Data Structures:</strong> GameMaker's ds_map and ds_list make managing game flags and inventory straightforward.</li>
+            </ul>
+
+            <h2>Core Systems Overview</h2>
+            <p>The DN RPG Engine includes several interconnected systems:</p>
+
+            <h3>Battle System</h3>
+            <p>The heart of any RPG is its combat. I implemented a turn-based system with:</p>
+            <ul>
+                <li>Agility-based turn order calculation</li>
+                <li>Multiple party members (Hero, Shapeshifter, Scientist, Trickster)</li>
+                <li>Status effects (poison, regeneration, stun, silence, curse, blindness)</li>
+                <li>Defense mechanics and resource management (HP, MP, TP)</li>
+                <li>Item system with multiple targeting options (single, all allies/enemies, everyone)</li>
+            </ul>
+
+            <pre class="code-block"><code>// Example: Status effect application in battle
+function apply_status_effect(target, effect_type, duration) {
+    if (!target.status_effects[effect_type]) {
+        target.status_effects[effect_type] = duration;
+        // Visual feedback and audio cue
+        play_sfx(snd_status_applied);
+    }
+}</code></pre>
+
+            <h3>Controller Pattern Architecture</h3>
+            <p>Rather than scattering logic across individual objects, I use specialized controller objects:</p>
+            <ul>
+                <li><strong>objController:</strong> Master game controller managing global state</li>
+                <li><strong>objBattleController:</strong> Handles turn-based combat flow</li>
+                <li><strong>objDialogueController:</strong> NPC dialogue display and interactions</li>
+                <li><strong>objInventoryMenuController:</strong> Inventory UI and item management</li>
+            </ul>
+
+            <p>This pattern keeps the codebase organized and makes debugging much easier.</p>
+
+            <h2>Challenges and Solutions</h2>
+            
+            <h3>Save/Load System</h3>
+            <p>Implementing a proper save system was trickier than expected. I had to persist:</p>
+            <ul>
+                <li>Player stats and party composition</li>
+                <li>Inventory contents</li>
+                <li>Game flags (quest progress, story events)</li>
+                <li>Current room and position</li>
+            </ul>
+            <p>The solution was creating a centralized save data structure that gets serialized to JSON and written to disk.</p>
+
+            <h3>Localization Support</h3>
+            <p>From the beginning, I wanted to support multiple languages. The solution was a JSON-based translation system that loads language files at runtime. All text strings reference keys like "battle_victory" or "item_health_potion" that get resolved based on the current language setting.</p>
+
+            <h2>What's Next?</h2>
+            <p>The engine is functional but there's still work to do:</p>
+            <ul>
+                <li>Equipment system with permanent gear and slots</li>
+                <li>More complex AI for enemy behaviors</li>
+                <li>Crafting system for items</li>
+                <li>Additional status effects and abilities</li>
+            </ul>
+
+            <p>Building this engine has been incredibly educational. It's one thing to play RPGs and appreciate their systems, but implementing them yourself gives you a whole new level of respect for the developers who create these experiences. If you're interested in RPG development, I highly recommend starting with a simple battle system and building up from there.</p>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 M4rioLS | Work in Progress.</p>
+    </footer>
+
+</body>
+</html>
